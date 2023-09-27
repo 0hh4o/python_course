@@ -1,0 +1,10 @@
+```mermaid
+flowchart TD
+    A[Start] --> B{Letters in sentence?}
+    B --> |YES| C{= a or e or i or o or u?}
+    C --> |Yes| D[count + 1]
+    D --> E
+    B ----> |No| E[End]
+    C --> |No| E[End]
+    E --> F[return count]
+```
