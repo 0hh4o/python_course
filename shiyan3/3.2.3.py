@@ -11,3 +11,4 @@ def valid_braces(string):
                 return False
     return len(stack) == 0
 valid_braces("{]}")
+print(1)
