@@ -56,39 +56,44 @@ morseCodes = {
 }
 def decodeBits(bits):
     bits = bits.strip('0')
-    min_length = float('inf')
-    max_length = 0
-    i = 0
-    while i < len(bits):
-        if bits[i] == '1':
-            j = i + 1
-            while j < len(bits) and bits[j] == '1':
-                j += 1
-            min_length = min(min_length, j - i)
-            i = j
-        else:
-            j = i + 1
-            while j < len(bits) and bits[j] == '0':
-                j += 1
-            max_length = max(max_length, j - i)
-            i = j
+    # 寻找最小单位时间
+    bits_temp = bits.split('1')
+    bits_temp_0 = [x for x in bits_temp if x != '']
+    bits_temp = bits.split('0')
+    bits_temp_1 = [x for x in bits_temp if x != '']
+    if bits_temp_0:
+        min_len_0 = len(min(bits_temp_0))
+    else:
+        min_len_0 = 0
+    if bits_temp_1:
+        min_len_1 = len(min(bits_temp_1))
+    else:
+        min_len_1 = 0
+    if min_len_0 == 0:
+        unit_time = min_len_1
+    elif min_len_1 == 0:
+        unit_time = min_len_0
+    else:
+        unit_time = min(min_len_1,min_len_0) # 通过比较bits中最短的有意义段确定单位时间
+    bits = bits[::unit_time] # 按照单位时间对原字符串进行切片，还原至最简形式
+    print(bits)
+    decoded_Bits = bits.replace('111','-').replace('1','.').replace('0000000','   ').replace('000',' ').replace('0','') # 字符转义
+    return decoded_Bits
     
-    rate = min(min_length, max_length)
-    morse_code = ''
-    morseCode = bits.replace('111'*rate, '-').replace('1'*rate, '.').replace('0000000'*rate, '   ').replace('000'*rate, ' ').replace('0'*rate, '')
-    return morseCode
-
 def decodeMorse(morseCode):
-    morseCode = morseCode.split('   ')
-    decodedMessage = []
-    for word in morseCode:
-        decodedWord = []
-        for letter in word.split(' '):
-            decodedWord.append(morseCodes[letter])
-        decodedMessage.append(''.join(decodedWord))
-    return ' '.join(decodedMessage)
-bits = '11000000111000011'
+    words = morseCode.split('   ')
+    
+    message = ''
+    
+    for word in words:
+        chars = word.split()
+        for char in chars:
+            message = message + morseCodes[char]
+        message = message + ' '
+    
+    return message.strip()
+bits = '1100000011000011'
 morse_code = decodeBits(bits)
-print(morse_code)
+#print(morse_code)
 decoded_message = decodeMorse(morse_code)
-print(decoded_message)
+#print(decoded_message)
